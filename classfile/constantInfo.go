@@ -21,7 +21,7 @@ type ConstantInfo interface {
 	readInfo(read *ClassReader)
 }
 
-func readConstantInfo(reader *ClassReader, cp ConstantPool) constantInfo {
+func readConstantInfo(reader *ClassReader, cp ConstantPool) ConstantInfo {
 	tag := reader.readUint8()
 	c := newConstantInfo(tag, cp)
 	c.readInfo(reader)

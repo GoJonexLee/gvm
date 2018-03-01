@@ -7,7 +7,7 @@ import (
 type ClassFile struct {
 	minorVersion uint16
 	majorVersion uint16
-	constantPool constantPool
+	constantPool ConstantPool
 	accessFlags  uint16
 	thisClass    uint16
 	superClass   uint16

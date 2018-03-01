@@ -4,7 +4,10 @@ import (
 	"fmt"
 )
 
-type ConstantPool []ConstantInfo
+type ConstantPool struct {
+	cfs []ConstantInfo
+	cf  *ClassFile
+}
 
 func (cp ConstantPool) getConstantInfo(index uint16) ConstantInfo {
 	if id := cp[index]; id != nil {
@@ -13,24 +16,24 @@ func (cp ConstantPool) getConstantInfo(index uint16) ConstantInfo {
 	panic(fmt.Errorf("Invalid constant pool index: %v!", id))
 }
 
-func (cp ConstantPool) getNameAndType(index uint16) (string, string) {
+func (cp *ConstantPool) getNameAndType(index uint16) (string, string) {
 	ntInfo := cp.getConstantInfo(index).(*ConstantNameAndTypeInfo)
 	name := cp.getUtf8(ntInfo.nameIndex)
 	tp := cp.getUtf8(ntInfo.descriptorIndex)
 	return name, tp
 }
 
-func (cp ConstantPool) getClassName(index uint16) string {
+func (cp *ConstantPool) getClassName(index uint16) string {
 	name := cp.getConstantInfo(index).(*ConstantClassInfo)
 	return cp.getUtf8(name.nameIndex)
 }
 
-func (cp ConstantPool) getUtf8(index uint16) string {
+func (cp *ConstantPool) getUtf8(index uint16) string {
 	utf8Info := cp.getConstantInfo(index).(*ConstantUtf8Info)
 	return utf8Info.str
 }
 
-func readConstantPool(read *ClassReader) ConstantPool {
+func readConstantPool(read *ClassReader) *ConstantPool {
 	cpCount := int(read.readUint16())
 	cp := make([]ConstantInfo, cpCount)
 
@@ -41,5 +44,5 @@ func readConstantPool(read *ClassReader) ConstantPool {
 			i++
 		}
 	}
-	return cp
+	return &ConstantPool{cfs: cp}
 }
